@@ -1,0 +1,4 @@
+Ez egy tetszőleges fájl tartalma...
+Ez egy új sor.
+Ez már a harmadik sor!
+Negyedik.

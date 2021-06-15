@@ -1,0 +1,4 @@
+Ez Egy Tetszőleges Fájl Tartalma...
+Ez Egy Új Sor.
+Ez Már A Harmadik Sor!
+Negyedik.
