@@ -17,4 +17,17 @@ const increaseAndFormatDate = (dateArray) => {
   return newArray;
 };
 
-module.exports = increaseAndFormatDate;
+const generateUserList = (userObjArray) => {
+  const newArray = [];
+
+  userObjArray.forEach((userObj) => {
+    const isAdult = userObj.age >= 18;
+    newArray.push({ isAdult, fullName: `${userObj.lastName} ${userObj.firstName}` });
+  });
+
+  return newArray;
+};
+
+const getUserNames = (userObjArray) => userObjArray.map((userObj) => `${userObj.lastName} ${userObj.firstName}`).join(', ');
+
+module.exports = Object.freeze({ increaseAndFormatDate, generateUserList, getUserNames });
