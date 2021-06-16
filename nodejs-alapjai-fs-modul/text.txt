@@ -1,0 +1,3 @@
+Ez egy új fájl, és annak tartalma...
+Második sor..
+bla bla!
