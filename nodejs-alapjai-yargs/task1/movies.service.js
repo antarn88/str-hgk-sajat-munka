@@ -1,7 +1,7 @@
 const MoviesService = (moviesApi) => {
   let movies = moviesApi.get()
 
-  const getAllMovies = () => movies
+  const getAllMovies = async () => await movies
 
   const findMovieById = (id) => movies.find(movie => movie.id === id)
 
