@@ -202,5 +202,11 @@
         "lastName": "Gáspár",
         "vaccine": "Pfizer",
         "id": 34
+    },
+    {
+        "firstName": "Aladár",
+        "lastName": "Krémes",
+        "vaccine": "",
+        "id": 35
     }
 ]

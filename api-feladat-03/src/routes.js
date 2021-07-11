@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 const express = require('express');
 const { join } = require('path');
 const createError = require('http-errors');
@@ -7,6 +8,7 @@ const {
   insertEntityToJsonList,
   updateEntityInJsonList,
   fileWriter,
+  idCorrecter,
 } = require('./utils');
 
 const controller = express.Router();
@@ -28,13 +30,20 @@ controller.get('/vaccinated', async (req, res) => {
 });
 
 // Get status that person is vaccinated.
-controller.get('/:id/vaccinated', async (req, res) => {
+controller.get('/:id/vaccinated', async (req, res, next) => {
   const people = await people$;
-  const { id } = req.params;
-  const person = people.find((p) => p.id === parseInt(id, 10));
+  let { id } = req.params;
+
+  if (!idCorrecter(id)) {
+    return next(new createError.BadRequest('Bad person ID!'));
+  }
+
+  id = idCorrecter(id);
+
+  const person = people.find((p) => p.id === id);
 
   if (!person) {
-    return res.sendStatus(404);
+    return next(new createError.NotFound('The person cannot be found!'));
   }
 
   const isVaccinated = !!person.vaccine;
@@ -61,10 +70,17 @@ controller.post('/', async (req, res, next) => {
 
 // Update type of vaccine.
 controller.put('/:id/:vaccine', async (req, res, next) => {
-  const { id, vaccine } = req.params;
+  let { id, vaccine } = req.params;
+
+  if (!idCorrecter(id)) {
+    return next(new createError.BadRequest('Bad person ID!'));
+  }
+
+  id = idCorrecter(id);
+  vaccine = vaccine.trim();
 
   const people = await people$;
-  const person = people.find((p) => p.id === parseInt(id, 10));
+  const person = people.find((p) => p.id === id);
 
   if (!person) {
     return next(new createError.NotFound('The person cannot be found!'));
@@ -74,14 +90,17 @@ controller.put('/:id/:vaccine', async (req, res, next) => {
     const updatedPerson = await updateEntityInJsonList(id, { ...person, vaccine }, databasePath);
     res.json(updatedPerson);
     return updatedPerson;
-  } catch (error) {
-    return next(new createError.NotFound(error.message));
+  } catch {
+    return next(new createError.NotFound('The person cannot be found!'));
   }
 });
 
 // Delete people based on vaccine.
 controller.delete('/:vaccine', async (req, res, next) => {
-  const { vaccine } = req.params;
+  let { vaccine } = req.params;
+
+  vaccine = vaccine.trim();
+
   const people = await people$;
   const filteredPeople = people.filter((person) => person.vaccine !== vaccine);
 

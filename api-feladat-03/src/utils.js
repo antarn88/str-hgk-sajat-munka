@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 const fsp = require('fs').promises;
 
 const getFileContent = async (filePath = '') => {
@@ -24,18 +25,29 @@ const updateEntityInJsonList = async (id = 0, updatedEntity = {}, jsonPath = '')
   const oldEntityIndex = list.findIndex((e) => e.id === parseInt(id, 10));
 
   if (oldEntityIndex === -1) {
-    throw new Error('The list does not contain this entity!');
+    throw new Error();
   }
 
   const newEntity = { ...oldEntity, ...updatedEntity };
   list[oldEntityIndex] = newEntity;
 
-  try {
-    await fileWriter(jsonPath, JSON.stringify(list, null, 4));
-  } catch (error) {
-    throw new Error(error.message);
-  }
+  await fileWriter(jsonPath, JSON.stringify(list, null, 4));
   return newEntity;
+};
+
+const idCorrecter = (id) => {
+  let newID = id;
+  if (typeof newID === 'string') {
+    newID = newID.trim();
+    newID = Number(newID);
+  }
+
+  if (isNaN(newID) || newID % 1 !== 0 || newID < 1) {
+    return false;
+  }
+
+  newID = Number(newID);
+  return newID;
 };
 
 module.exports = Object.freeze({
@@ -43,4 +55,5 @@ module.exports = Object.freeze({
   insertEntityToJsonList,
   updateEntityInJsonList,
   fileWriter,
+  idCorrecter,
 });
