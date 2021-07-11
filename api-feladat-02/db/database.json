@@ -166,5 +166,41 @@
         "lastName": "Lakatos",
         "vaccine": "Sinopharm",
         "id": 28
+    },
+    {
+        "firstName": "Wendel",
+        "lastName": "Orbán",
+        "vaccine": "Pfizer",
+        "id": 29
+    },
+    {
+        "firstName": "Ákos",
+        "lastName": "Orbán",
+        "vaccine": "Moderna",
+        "id": 30
+    },
+    {
+        "firstName": "Péter",
+        "lastName": "Medgyessy",
+        "vaccine": "Sinopharm",
+        "id": 31
+    },
+    {
+        "firstName": "Krisztián",
+        "lastName": "Ruszó",
+        "vaccine": "AstraZeneca",
+        "id": 32
+    },
+    {
+        "firstName": "Hunóra",
+        "lastName": "Ruszó",
+        "vaccine": "Sinopharm",
+        "id": 33
+    },
+    {
+        "firstName": "Győző",
+        "lastName": "Gáspár",
+        "vaccine": "Pfizer",
+        "id": 34
     }
 ]

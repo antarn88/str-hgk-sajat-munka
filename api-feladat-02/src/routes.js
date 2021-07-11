@@ -2,7 +2,12 @@ const express = require('express');
 const { join } = require('path');
 const createError = require('http-errors');
 
-const { getFileContent, insertEntityToJsonList } = require('./utils');
+const {
+  getFileContent,
+  insertEntityToJsonList,
+  updateEntityInJsonList,
+  fileWriter,
+} = require('./utils');
 
 const controller = express.Router();
 
@@ -52,6 +57,41 @@ controller.post('/', async (req, res, next) => {
   res.status(201);
   res.json(newEntity);
   return newEntity;
+});
+
+// Update type of vaccine.
+controller.put('/:id/:vaccine', async (req, res, next) => {
+  const { id, vaccine } = req.params;
+
+  const people = await people$;
+  const person = people.find((p) => p.id === parseInt(id, 10));
+
+  if (!person) {
+    return next(new createError.NotFound('The person cannot be found!'));
+  }
+
+  try {
+    const updatedPerson = await updateEntityInJsonList(id, { ...person, vaccine }, databasePath);
+    res.json(updatedPerson);
+    return updatedPerson;
+  } catch (error) {
+    return next(new createError.NotFound(error.message));
+  }
+});
+
+// Delete people based on vaccine.
+controller.delete('/:vaccine', async (req, res, next) => {
+  const { vaccine } = req.params;
+  const people = await people$;
+  const filteredPeople = people.filter((person) => person.vaccine !== vaccine);
+
+  try {
+    await fileWriter(databasePath, JSON.stringify(filteredPeople, null, 4));
+    res.json(true);
+    return true;
+  } catch (error) {
+    return next(new createError.InternalServerError(error.message));
+  }
 });
 
 module.exports = controller;
