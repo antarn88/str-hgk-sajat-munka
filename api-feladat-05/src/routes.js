@@ -1,37 +1,27 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-restricted-globals */
 const express = require('express');
-const { join } = require('path');
 const createError = require('http-errors');
+const Person = require('./models/person.model');
 
-const {
-  getFileContent,
-  insertEntityToJsonList,
-  updateEntityInJsonList,
-  fileWriter,
-  idCorrecter,
-} = require('./utils');
+const { idCorrecter } = require('./utils');
 
 const controller = express.Router();
 
-const databasePath = join(__dirname, '..', 'db', 'database.json');
-const people$ = getFileContent(databasePath);
-
 // Count all people.
 controller.get('/count', async (req, res) => {
-  const people = await people$;
-  res.json(people.length);
+  const peopleCount = await Person.find().countDocuments();
+  res.json(peopleCount);
 });
 
 // Get vaccinated people.
 controller.get('/vaccinated', async (req, res) => {
-  const people = await people$;
-  const vaccinatedPeople = people.filter((person) => person.vaccine);
+  const vaccinatedPeople = await Person.find({ vaccine: { $nin: ['', null] } }).exec();
   res.json(vaccinatedPeople);
 });
 
 // Get status that person is vaccinated.
 controller.get('/:id/vaccinated', async (req, res, next) => {
-  const people = await people$;
   let { id } = req.params;
 
   if (!idCorrecter(id)) {
@@ -40,7 +30,7 @@ controller.get('/:id/vaccinated', async (req, res, next) => {
 
   id = idCorrecter(id);
 
-  const person = people.find((p) => p.id === id);
+  const person = await Person.findById(id).exec();
 
   if (!person) {
     return next(new createError.NotFound('The person cannot be found!'));
@@ -55,6 +45,8 @@ controller.get('/:id/vaccinated', async (req, res, next) => {
 controller.post('/', async (req, res, next) => {
   const { firstName, lastName } = req.body;
   let { vaccine } = req.body;
+  const people = await Person.find().exec();
+  const _id = people.pop()._id + 1;
 
   if (!firstName || !lastName) {
     return next(new createError.BadRequest('Missing properties!'));
@@ -62,7 +54,14 @@ controller.post('/', async (req, res, next) => {
 
   vaccine = !vaccine ? vaccine = '' : vaccine;
 
-  const newEntity = await insertEntityToJsonList({ firstName, lastName, vaccine }, databasePath);
+  const newPerson = new Person({
+    _id,
+    firstName,
+    lastName,
+    vaccine,
+  });
+
+  const newEntity = await newPerson.save();
   res.status(201);
   res.json(newEntity);
   return newEntity;
@@ -79,15 +78,20 @@ controller.put('/:id/:vaccine', async (req, res, next) => {
   id = idCorrecter(id);
   vaccine = vaccine.trim();
 
-  const people = await people$;
-  const person = people.find((p) => p.id === id);
+  const person = await Person.findById(id);
 
   if (!person) {
     return next(new createError.NotFound('The person cannot be found!'));
   }
 
+  person.vaccine = vaccine;
+
   try {
-    const updatedPerson = await updateEntityInJsonList(id, { ...person, vaccine }, databasePath);
+    const updatedPerson = await Person.findByIdAndUpdate(id, person,
+      {
+        new: true,
+        useFindAndModify: false,
+      });
     res.json(updatedPerson);
     return updatedPerson;
   } catch {
@@ -96,21 +100,24 @@ controller.put('/:id/:vaccine', async (req, res, next) => {
 });
 
 // Delete people based on vaccine.
-controller.delete('/:vaccine', async (req, res, next) => {
+controller.delete('/:vaccine', async (req, res) => {
   let { vaccine } = req.params;
-
   vaccine = vaccine.trim();
 
-  const people = await people$;
-  const filteredPeople = people.filter((person) => person.vaccine !== vaccine);
+  const filteredPeople = await Person.find({ vaccine });
+  filteredPeople.forEach(async (person) => {
+    await Person.findByIdAndDelete(person._id);
+  });
 
-  try {
-    await fileWriter(databasePath, JSON.stringify(filteredPeople, null, 4));
-    res.json(true);
-    return true;
-  } catch (error) {
-    return next(new createError.InternalServerError(error.message));
-  }
+  res.json([]);
 });
 
+// Insertmany for backup data
+/*
+controller.post('/insertmany', async (req, res) => {
+  await Person.insertMany(req.body);
+  res.status(201);
+  res.json(req.body);
+});
+*/
 module.exports = controller;
