@@ -4,12 +4,12 @@ const winston = require('winston');
 
 const options = {
   file: {
-    level: 'debug',
+    level: process.env.LOG_LEVEL_FILE,
     filename: join(__dirname, '../../app.log'),
     format: winston.format.simple(),
   },
   console: {
-    level: 'debug',
+    level: process.env.LOG_LEVEL_CONSOLE,
   },
 };
 

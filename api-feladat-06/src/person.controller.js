@@ -1,27 +1,22 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable no-restricted-globals */
-const express = require('express');
 const createError = require('http-errors');
-const Person = require('./models/person.model');
 
+const personService = require('./person.service');
 const { idCorrecter } = require('./utils');
 
-const controller = express.Router();
+exports.countAllPeople = async (req, res) => {
+  const people = await personService.findAll();
+  res.json(people.length);
+};
 
-// Count all people.
-controller.get('/count', async (req, res) => {
-  const peopleCount = await Person.find().countDocuments();
-  res.json(peopleCount);
-});
-
-// Get vaccinated people.
-controller.get('/vaccinated', async (req, res) => {
-  const vaccinatedPeople = await Person.find({ vaccine: { $nin: ['', null] } }).exec();
+exports.getVaccinatedPeople = async (req, res) => {
+  const vaccinatedPeople = await personService.findAll({ vaccine: { $nin: ['', null] } });
   res.json(vaccinatedPeople);
-});
+};
 
 // Get status that person is vaccinated.
-controller.get('/:id/vaccinated', async (req, res, next) => {
+exports.isVaccinated = async (req, res, next) => {
   let { id } = req.params;
 
   if (!idCorrecter(id)) {
@@ -30,7 +25,7 @@ controller.get('/:id/vaccinated', async (req, res, next) => {
 
   id = idCorrecter(id);
 
-  const person = await Person.findById(id).exec();
+  const person = await personService.findOne(id);
 
   if (!person) {
     return next(new createError.NotFound('The person cannot be found!'));
@@ -39,13 +34,12 @@ controller.get('/:id/vaccinated', async (req, res, next) => {
   const isVaccinated = !!person.vaccine;
   res.json(isVaccinated);
   return isVaccinated;
-});
+};
 
-// Create a new person.
-controller.post('/', async (req, res, next) => {
+exports.createANewPerson = async (req, res, next) => {
   const { firstName, lastName } = req.body;
   let { vaccine } = req.body;
-  const people = await Person.find().exec();
+  const people = await personService.findAll();
   const _id = people.pop()._id + 1;
 
   if (!firstName || !lastName) {
@@ -54,21 +48,20 @@ controller.post('/', async (req, res, next) => {
 
   vaccine = !vaccine ? vaccine = '' : vaccine;
 
-  const newPerson = new Person({
+  const newPerson = {
     _id,
     firstName,
     lastName,
     vaccine,
-  });
+  };
 
-  const newEntity = await newPerson.save();
+  const newEntity = await personService.create(newPerson);
   res.status(201);
   res.json(newEntity);
   return newEntity;
-});
+};
 
-// Update type of vaccine.
-controller.put('/:id/:vaccine', async (req, res, next) => {
+exports.updateTypeOfVaccine = async (req, res, next) => {
   let { id, vaccine } = req.params;
 
   if (!idCorrecter(id)) {
@@ -78,7 +71,7 @@ controller.put('/:id/:vaccine', async (req, res, next) => {
   id = idCorrecter(id);
   vaccine = vaccine.trim();
 
-  const person = await Person.findById(id);
+  const person = await personService.findOne(id);
 
   if (!person) {
     return next(new createError.NotFound('The person cannot be found!'));
@@ -87,37 +80,31 @@ controller.put('/:id/:vaccine', async (req, res, next) => {
   person.vaccine = vaccine;
 
   try {
-    const updatedPerson = await Person.findByIdAndUpdate(id, person,
-      {
-        new: true,
-        useFindAndModify: false,
-      });
+    const updatedPerson = await personService.update(id, person);
     res.json(updatedPerson);
     return updatedPerson;
   } catch {
     return next(new createError.NotFound('The person cannot be found!'));
   }
-});
+};
 
-// Delete people based on vaccine.
-controller.delete('/:vaccine', async (req, res) => {
+exports.deletePeopleWithCertainVaccine = async (req, res) => {
   let { vaccine } = req.params;
   vaccine = vaccine.trim();
 
-  const filteredPeople = await Person.find({ vaccine });
+  const filteredPeople = await personService.findAll({ vaccine });
   filteredPeople.forEach(async (person) => {
-    await Person.findByIdAndDelete(person._id);
+    await personService.delete(person._id);
   });
 
   res.json([]);
-});
+};
 
 // Insertmany for backup data
 /*
-controller.post('/insertmany', async (req, res) => {
-  await Person.insertMany(req.body);
+exports.insertMany = async (req, res) => {
+  await personService.insertMany(req.body);
   res.status(201);
   res.json(req.body);
-});
+};
 */
-module.exports = controller;

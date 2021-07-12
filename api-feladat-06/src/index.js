@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
 require('dotenv').config();
+const config = require('config');
 const express = require('express');
 const morgan = require('morgan');
 const swaggerUi = require('swagger-ui-express');
@@ -18,10 +19,12 @@ mongoose.Promise = global.Promise;
 // Connect to MongoDB database
 (async () => {
   try {
-    const {
-      DB_USER, DB_PASSWORD, DB_HOST, DB_DATABASE, DB_OPTIONS,
-    } = process.env;
-    const connectionString = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_DATABASE}?${DB_OPTIONS}`;
+    if (!config.has('database')) {
+      logger.error('No database config found.');
+      process.exit();
+    }
+    const { host, user, password } = config.get('database');
+    const connectionString = `mongodb+srv://${user}:${password}@${host}`;
     await mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true });
     logger.info('MongoDB connection has been established successfully.');
   } catch (error) {
@@ -34,7 +37,7 @@ app.use(morgan('tiny', { stream: logger.stream }));
 
 app.use(express.json());
 
-app.use('/person', require('./routes'));
+app.use('/person', require('./person.routes'));
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
