@@ -1,0 +1,43 @@
+openapi: 3.0.0
+info:
+  version: 1.1.0
+  title: ESZT (Egészségügyi Szuri Tár) API
+  description: ESZT (Egészségügyi Szuri Tár) REST API megvalósítása
+servers:
+  - url: http://localhost:3000
+paths:
+  /person/count:
+    get:
+      description: Returns a number of all people
+      responses:
+        '200':
+          description: Number of people returned successfully
+          content:
+            application/json:
+              schema:
+                type: integer
+  /person/vaccinated:
+    get:
+      description: Returns a list of vaccinated people
+      responses:
+        '200':
+          description: Vaccinated people list returned successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+components:
+  schemas:
+    Person:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - vaccine
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        vaccine:
+          type: string
