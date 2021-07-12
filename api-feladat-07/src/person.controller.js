@@ -5,6 +5,15 @@ const createError = require('http-errors');
 const personService = require('./person.service');
 const { idCorrecter } = require('./utils');
 
+exports.findOne = async (req, res, next) => {
+  const person = await personService.findOne(req.params.id);
+  if (!person) {
+    return next(new createError.NotFound('Person is not found'));
+  }
+  res.json(person);
+  return person;
+};
+
 exports.countAllPeople = async (req, res) => {
   const people = await personService.findAll();
   res.json(people.length);
