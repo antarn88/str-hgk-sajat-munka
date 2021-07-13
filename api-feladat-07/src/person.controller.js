@@ -49,7 +49,7 @@ exports.createANewPerson = async (req, res, next) => {
   const { firstName, lastName } = req.body;
   let { vaccine } = req.body;
   const people = await personService.findAll();
-  const _id = people.pop()._id + 1;
+  const _id = people[people.length - 1]._id + 1;
 
   if (!firstName || !lastName) {
     return next(new createError.BadRequest('Missing properties!'));

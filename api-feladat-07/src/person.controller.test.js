@@ -50,7 +50,6 @@ describe('person controler', () => {
       },
     });
 
-    // https://github.com/Carnubak/jest-mock-req-res - HELP
     await personController.findOne(request, response, nextFunction);
     expect(personService.findOne).toBeCalledWith(PERSON_ID);
     expect(response.json).not.toBeCalledWith(mockData.find((p) => p.id === PERSON_ID));
@@ -69,9 +68,8 @@ describe('person controler', () => {
       body: NEW_PERSON,
     });
 
-    // https://github.com/Carnubak/jest-mock-req-res - HELP
     await personController.createANewPerson(request, response, nextFunction);
     expect(personService.create).toBeCalledWith(NEW_PERSON);
-    expect(response.json).toBeCalledWith(4);
+    expect(response.json).toBeCalledWith(NEW_PERSON);
   });
 });

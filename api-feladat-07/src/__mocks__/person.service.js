@@ -12,8 +12,8 @@ personService.findAll = jest.fn(() => Promise.resolve(
   mockData,
 ));
 
-personService.create = jest.fn((person) => Promise.resolve(
-  mockData.push(person),
+personService.create = jest.fn((personData) => Promise.resolve(
+  personData,
 ));
 
 personService.__setMockData = (data) => mockData = data;
