@@ -50,8 +50,29 @@ describe('person controler', () => {
       },
     });
 
+    // https://github.com/Carnubak/jest-mock-req-res - HELP
     await personController.findOne(request, response, nextFunction);
     expect(personService.findOne).toBeCalledWith(PERSON_ID);
     expect(response.json).not.toBeCalledWith(mockData.find((p) => p.id === PERSON_ID));
+  });
+
+  test('Create a new person', async () => {
+    const id = mockData.pop().id + 1;
+    const NEW_PERSON = {
+      id,
+      firstName: 'Keresztnév',
+      lastName: 'Vezetéknév',
+      vaccine: 'Vakcinatípus',
+    };
+
+    const request = mockRequest({
+      method: 'POST',
+      body: NEW_PERSON,
+    });
+
+    // https://github.com/Carnubak/jest-mock-req-res - HELP
+    await personController.createANewPerson(request, response, nextFunction);
+    expect(personService.create).toBeCalledWith(NEW_PERSON);
+    expect(response.json).toBeCalledWith(NEW_PERSON);
   });
 });
