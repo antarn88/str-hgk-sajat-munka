@@ -20,7 +20,7 @@ exports.countAllPeople = async (req, res) => {
 };
 
 exports.getVaccinatedPeople = async (req, res) => {
-  const vaccinatedPeople = await personService.findAll({ vaccine: { $nin: ['', null] } });
+  const vaccinatedPeople = await personService.findAll({ 'vaccine.count': { $ne: 0 } });
   res.json(vaccinatedPeople);
 };
 
@@ -40,7 +40,7 @@ exports.isVaccinated = async (req, res, next) => {
     return next(new createError.NotFound('The person cannot be found!'));
   }
 
-  const isVaccinated = !!person.vaccine;
+  const isVaccinated = !!person.count;
   res.json(isVaccinated);
   return isVaccinated;
 };
