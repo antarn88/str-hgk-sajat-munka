@@ -4,7 +4,13 @@ const PersonSchema = mongoose.Schema({
   _id: Number,
   firstName: String,
   lastName: String,
-  vaccine: String,
+  vaccine: {
+    vaccine: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Vaccine',
+    },
+    count: Number,
+  },
 }, {
   timestamps: false,
   versionKey: false,
