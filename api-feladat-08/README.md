@@ -1,7 +1,10 @@
-Teszteljük az egyszerű, működő ESZT (Egészségügyi Szuri Tár) API alkalmazást, hogy biztosan mindig jól működjön!
+Folytassuk az egyszerű, működő ESZT (Egészségügyi Szuri Tár) API alkalmazást!
 
-1.  Írj egy mockot a `PersonService` osztálynak!
-2.  Írj egy unit tesztet a `GET /person/:id` végpontot kezelő controller metódusra, amely azt az esetet teszteli, ha nem létező ID paraméterrel hívják meg a függvényt
-3.  Írj egy unit tesztet a `POST /person` végpontot kezelő controller metódusra!
-4.  Írj egy integrációs tesztet a `PUT /person/:id` végpont meghívására!
-5.  Írj egy integrációs tesztet a `DELETE /person/:id` végpontra, amelyben nem létező ID-val teszteled a végpontot!
+1.  Készítsd el a `Vaccine` sémát, rendelkezzen a következő mezőkkel:
+    -   `id`: egyedi azonosító (ObjectId)
+    -   `name`: oltás neve (string)
+    -   `efficiency`: oltás hatékonysága, 1-100 közötti szám (number)
+2.  Módosítsd a `Person` sémát: a `vaccine` mező egy nested objektum legyen egy `vaccine` és `count` property-vel:
+    -   `count`: egy szám, hogy az adott személy hány dózist kapott meg
+    -   `vaccine`: referencia (id) egy `Vaccine` típusú dokumentumra
+3.  Módosítsd a `PersonService` (és szükség esetén a `PersonController`) osztályt, hogy továbbra is megfelelően működjön!
