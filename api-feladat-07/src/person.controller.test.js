@@ -8,25 +8,25 @@ jest.mock('./person.service');
 describe('person controler', () => {
   const mockData = [
     {
-      id: 1,
+      _id: 1,
       firstName: 'Márió',
       lastName: 'Lakatos',
       vaccine: '',
     },
     {
-      id: 2,
+      _id: 2,
       firstName: 'Erzsike',
       lastName: 'Lakatos',
       vaccine: 'Pfizer',
     },
     {
-      id: 3,
+      _id: 3,
       firstName: 'Jessica',
       lastName: 'Lakatos',
       vaccine: 'AstraZeneca',
     },
     {
-      id: 4,
+      _id: 4,
       firstName: 'Pentiumkettő',
       lastName: 'Lakatos',
       vaccine: 'Sinopharm',
@@ -57,9 +57,8 @@ describe('person controler', () => {
   });
 
   test('Create a new person', async () => {
-    const id = mockData.pop().id + 1;
     const NEW_PERSON = {
-      id,
+      _id: 5,
       firstName: 'Keresztnév',
       lastName: 'Vezetéknév',
       vaccine: 'Vakcinatípus',
@@ -73,6 +72,6 @@ describe('person controler', () => {
     // https://github.com/Carnubak/jest-mock-req-res - HELP
     await personController.createANewPerson(request, response, nextFunction);
     expect(personService.create).toBeCalledWith(NEW_PERSON);
-    expect(response.json).toBeCalledWith(NEW_PERSON);
+    expect(response.json).toBeCalledWith(4);
   });
 });
