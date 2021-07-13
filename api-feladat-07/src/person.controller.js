@@ -106,7 +106,12 @@ exports.deletePeopleWithCertainVaccine = async (req, res) => {
     await personService.delete(person._id);
   });
 
-  res.json([]);
+  if (filteredPeople.length < 1) {
+    res.status(404);
+    res.json(false);
+  } else {
+    res.json([]);
+  }
 };
 
 // Insertmany for backup data
