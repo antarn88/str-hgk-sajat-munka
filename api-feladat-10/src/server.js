@@ -8,6 +8,9 @@ const mongoose = require('mongoose');
 
 const logger = require('./config/logger');
 
+// Authentication.
+const authHandler = require('./auth/authHandler');
+
 const app = express();
 
 const swaggerDocument = YAML.load('./docs/swagger.yaml');
@@ -29,6 +32,11 @@ mongoose.Promise = global.Promise;
 app.use(morgan('tiny', { stream: logger.stream }));
 
 app.use(express.json());
+
+// For Authhandler
+app.post('/login', authHandler.login);
+app.post('/refresh', authHandler.refresh);
+app.post('/logout', authHandler.logout);
 
 app.use('/person', require('./person.routes'));
 
