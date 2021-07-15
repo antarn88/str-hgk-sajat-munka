@@ -14,5 +14,3 @@ exports.update = (id, updatedData) => Person.findByIdAndUpdate(id, updatedData, 
 });
 
 exports.delete = (id) => Person.findByIdAndDelete(id);
-
-// exports.insertMany = (dataArray) => Person.insertMany(dataArray);
