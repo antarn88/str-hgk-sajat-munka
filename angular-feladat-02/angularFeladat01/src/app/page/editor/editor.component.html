@@ -1,1 +1,26 @@
-<p>editor works!</p>
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-12">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Style</th>
+            <th>Year</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let movie of list$ | async">
+            <td>{{ movie.id }}</td>
+            <td>{{ movie.title }}</td>
+            <td>{{ movie.style }}</td>
+            <td>{{ movie.year }}</td>
+            <td><button class="btn btn-primary" routerLink="/editor/{{ movie.id }}">Edit</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

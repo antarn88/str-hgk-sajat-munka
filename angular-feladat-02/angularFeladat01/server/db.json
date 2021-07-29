@@ -1,0 +1,54 @@
+{
+  "users": [
+    {
+      "email": "test1@test1.com",
+      "password": "$2a$10$fA2aBlUu9SIOEhKdSb44ou3IU6T4oyjGCkEhEq8V1iJd1pXWNxl0W",
+      "role": "1",
+      "id": 1
+    },
+    {
+      "email": "test2@test2.com",
+      "password": "$2a$10$h34KOIZA9t894ttKSk8.z.9BDkGRfww4iY9E5YxQg/0TIaVQq1Fw.",
+      "role": "2",
+      "id": 2
+    },
+    {
+      "email": "test3@test3.com",
+      "password": "$2a$10$tIVBR3YgNtTWCStBjIhUMe6RpfhOtFeUoIrf3d71eaZ2OTl6J19f6",
+      "role": "3",
+      "id": 3
+    }
+  ],
+  "movies": [
+    {
+      "id": 1,
+      "title": "Terminátor 1.",
+      "style": "action",
+      "year": 1984
+    },
+    {
+      "id": 2,
+      "title": "Jákob rabbi kalandjai",
+      "style": "comedy",
+      "year": 1973
+    },
+    {
+      "id": 3,
+      "title": "A pogány madonna",
+      "style": "comedy",
+      "year": 1982
+    },
+    {
+      "id": 4,
+      "title": "Az elvarázsolt dollár",
+      "style": "comedy",
+      "year": 1986
+    },
+    {
+      "id": 5,
+      "title": "Sose halunk meg",
+      "style": "comedy",
+      "year": 1993
+    }
+  ]
+}

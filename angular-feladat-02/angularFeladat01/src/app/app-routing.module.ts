@@ -5,6 +5,7 @@ import { EditorComponent } from './page/editor/editor.component';
 import { ForbiddenComponent } from './page/forbidden/forbidden.component';
 import { HomeComponent } from './page/home/home.component';
 import { LoginComponent } from './page/login/login.component';
+import { MovieEditorComponent } from './page/movie-editor/movie-editor.component';
 import { AuthGuardService } from './service/auth-guard.service';
 import { RoleGuardService } from './service/role-guard.service';
 
@@ -20,6 +21,10 @@ const routes: Routes = [
     data: {
       expectedRole: 2
     }
+  },
+  {
+    path: 'editor/:id',
+    component: MovieEditorComponent,
   },
   {
     path: 'admin',
