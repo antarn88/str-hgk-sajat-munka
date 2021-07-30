@@ -20,7 +20,13 @@ export class AuthService {
     private router: Router,
     private userService: UserService,
     private http: HttpClient
-  ) { }
+  ) { 
+    if (localStorage.currentUser) {
+      const user: User = JSON.parse(localStorage.currentUser);
+      this.lastToken = user.token || '';
+      this.currentUserSubject.next(user);
+    }
+  }
 
   get currentUserValue(): User {
     return this.currentUserSubject.value;
@@ -54,6 +60,7 @@ export class AuthService {
   }
 
   logout() {
+    this.lastToken = '';
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
     this.router.navigate(['login']);
